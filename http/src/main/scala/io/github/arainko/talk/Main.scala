@@ -8,19 +8,27 @@ import eu.timepit.refined.boolean.And
 type CoolInt = CoolInt.Type
 object CoolInt extends Newtype[Int]
 
-type CoolValidatedInt = CoolValidatedInt.Type
-object CoolValidatedInt extends NewtypeValidated[Int, GreaterEqual[0] And Even]
+
+
 
 final case class Prim(int: Int, int2: Int)
+
+object CoolValidatedInt extends NewtypeValidated[Int, GreaterEqual[0]]
+
+object Prim {
+  type CoolValidatedInt = CoolValidatedInt.Type
+
+}
+
 final case class New(int: CoolInt, int2: CoolInt)
-final case class NewValidated(int: CoolValidatedInt, int2: CoolValidatedInt)
+final case class NewValidated(int: Prim.CoolValidatedInt, int2: Prim.CoolValidatedInt)
 
 object Main extends App {
   // println(CoolValidatedInt.make(-1))
 
   val t = Transformer.Debug.showCode(summon[Transformer.Accumulating[Either[::[String], _], Prim, NewValidated]])
 
-  println(t.transform(Prim(1, 0)))
+  println(t.transform(Prim(1, -1)))
 
   private given UnsafeTransformations = UnsafeTransformations.allow
 

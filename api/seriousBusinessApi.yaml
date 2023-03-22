@@ -1,12 +1,33 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
-  title: Swagger Petstore
-  license:
-    name: MIT
-servers:
-  - url: http://petstore.swagger.io/v1
+  version: 0.0.1
+  title: Event Management
 paths:
+  /events/conference:
+    post:
+      summary: Create a new conference
+      operationId: create-conference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConference"
+      responses:
+        201:
+          description: "Conference successfully created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedId"
+        400:
+          description: "Invalid entity"
+          content:
+            application/json:
+              $ref: "#/components/schemas/ValidationErrors"
+    /events/conference/{conferenceId}:
+      put:
+        summary: Update
   /pets:
     get:
       summary: List all pets
@@ -23,7 +44,7 @@ paths:
             maximum: 100
             format: int32
       responses:
-        '200':
+        "200":
           description: A paged array of pets
           headers:
             x-next:
@@ -31,7 +52,7 @@ paths:
               schema:
                 type: string
           content:
-            application/json:    
+            application/json:
               schema:
                 $ref: "#/components/schemas/Pets"
     post:
@@ -40,7 +61,7 @@ paths:
       tags:
         - pets
       responses:
-        '201':
+        "201":
           description: Null response
   /pets/{petId}:
     get:
@@ -56,7 +77,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Expected response to a valid request
           content:
             application/json:

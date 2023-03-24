@@ -1,5 +1,5 @@
 package io.github.arainko.talk
 
 enum Pronouns {
-  case `they/them`, `she/her`, `he/him`
+  case `They/them`, `She/her`, `He/him`
 }

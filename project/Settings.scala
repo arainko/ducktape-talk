@@ -11,7 +11,7 @@ object Settings {
     ScalacOptions.privateOption("kind-projector:underscores", _ >= davidgregory084.ScalaVersion.V3_0_0)
 
   val common = List(
-    scalaVersion := "3.2.2",
+    scalaVersion := "3.2.1",
     tpolecatExcludeOptions += ScalacOptions.privateKindProjector,
     tpolecatScalacOptions ++= Set(underscoreTypeLambdas)
   )

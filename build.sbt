@@ -9,7 +9,7 @@ lazy val http =
       Compile / guardrailTasks := List(
         ScalaServer(
           specPath  = file("api/seriousBusinessApi.yaml"),
-          pkg       = "io.gitbug.arainko.talk.generated",
+          pkg       = "io.github.arainko.talk.generated",
           framework = "http4s"
         )
       )

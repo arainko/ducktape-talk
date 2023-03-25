@@ -1,13 +1,9 @@
-package io.github.arainko.talk
+package io.github.arainko.talk.domain
 
-import java.time.LocalDate
 import java.util.UUID
 import io.github.arainko.newtypes.*
-import eu.timepit.refined.string
-import eu.timepit.refined.collection.*
-import eu.timepit.refined.string.Trimmed
-import eu.timepit.refined.boolean.And
-import eu.timepit.refined.types.string.NonEmptyString
+import io.github.arainko.talk.domain.UnsurprisingString
+import io.github.arainko.talk.domain.Presenter
 
 final case class Talk(id: Talk.Id, name: Talk.Name, elevatorPitch: Talk.ElevatorPitch, presenter: Presenter)
 

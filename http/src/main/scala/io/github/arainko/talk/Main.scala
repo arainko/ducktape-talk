@@ -5,7 +5,9 @@ import io.github.arainko.newtypes.*
 import eu.timepit.refined.numeric.*
 import eu.timepit.refined.boolean.And
 import io.github.arainko
-import javax.xml.crypto.dsig.Transform
+
+import io.github.arainko.talk.domain.Conference
+import java.util.UUID
 
 type CoolInt = CoolInt.Type
 object CoolInt extends Newtype[Int]
@@ -19,8 +21,10 @@ object Prim {
 
 }
 
-final case class New(int: CoolInt, int2: CoolInt)
+
 final case class NewValidated(int: Prim.CoolValidatedInt, int2: Prim.CoolValidatedInt)
+
+final case class Id(createdId: UUID)
 
 object Main extends App {
   // println(CoolValidatedInt.make(-1))
@@ -31,7 +35,9 @@ object Main extends App {
 
   // private given UnsafeTransformations = UnsafeTransformations.allow
 
-  import io.gitbug.arainko.talk.generated.definitions.*
+  import io.github.arainko.talk.generated.definitions.*
+
+  Transformer.Debug.showCode(summon[Transformer[CreatedId, Id]])
 
   // summon[Transformer.Accumulating[Either[::[String], _], GetTalk, Talk]]
 
@@ -42,9 +48,9 @@ object Main extends App {
   //     .build()
   // }
 
-  Transformer.Debug.showCode {
-    Transformer.define[Conference, GetConference].build()
-  }
+  // Transformer.Debug.showCode {
+  //   Transformer.define[Conference, GetConference].build()
+  // }
 
   // Transformer.Debug.showCode(summon[Transformer.Accumulating[Either[::[String], _], GetConference, Conference]])
 
@@ -73,11 +79,11 @@ object Main extends App {
                       type MirroredLabel >: "GetTalk" <: "GetTalk"
                       type MirroredElemTypes >: *:[UUID, *:[String, *:[String, *:[Presenter, EmptyTuple]]]] <: *:[
                         UUID,
-                        *:[String, *:[String, *:[Presenter, EmptyTuple]]]
+   *:[String, *:[String, *:[Presenter, EmptyTuple]]]
                       ]
                       type MirroredElemLabels >: *:[
                         "id",
-                        *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]
+   *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]
                       ] <: *:["id", *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]]
                     } = GetTalk.$asInstanceOf$[
                       Product {
@@ -86,11 +92,11 @@ object Main extends App {
                         type MirroredLabel >: "GetTalk" <: "GetTalk"
                         type MirroredElemTypes >: *:[UUID, *:[String, *:[String, *:[Presenter, EmptyTuple]]]] <: *:[
                           UUID,
-                          *:[String, *:[String, *:[Presenter, EmptyTuple]]]
+   *:[String, *:[String, *:[Presenter, EmptyTuple]]]
                         ]
                         type MirroredElemLabels >: *:[
                           "id",
-                          *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]
+   *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]
                         ] <: *:["id", *:["name", *:["elevatorPitch", *:["presenter", EmptyTuple]]]]
                       }
                     ]
@@ -109,11 +115,11 @@ object Main extends App {
                                 type MirroredLabel >: "Presenter" <: "Presenter"
                                 type MirroredElemTypes >: *:[
                                   String,
-                                  *:[String, *:[Option[Pronouns], EmptyTuple]]
+   *:[String, *:[Option[Pronouns], EmptyTuple]]
                                 ] <: *:[String, *:[String, *:[Option[Pronouns], EmptyTuple]]]
                                 type MirroredElemLabels >: *:["name", *:["bio", *:["pronouns", EmptyTuple]]] <: *:[
                                   "name",
-                                  *:["bio", *:["pronouns", EmptyTuple]]
+   *:["bio", *:["pronouns", EmptyTuple]]
                                 ]
                               } = Presenter.$asInstanceOf$[
                                 Product {
@@ -122,11 +128,11 @@ object Main extends App {
                                   type MirroredLabel >: "Presenter" <: "Presenter"
                                   type MirroredElemTypes >: *:[
                                     String,
-                                    *:[String, *:[Option[Pronouns], EmptyTuple]]
+   *:[String, *:[Option[Pronouns], EmptyTuple]]
                                   ] <: *:[String, *:[String, *:[Option[Pronouns], EmptyTuple]]]
                                   type MirroredElemLabels >: *:["name", *:["bio", *:["pronouns", EmptyTuple]]] <: *:[
                                     "name",
-                                    *:["bio", *:["pronouns", EmptyTuple]]
+   *:["bio", *:["pronouns", EmptyTuple]]
                                   ]
                                 }
                               ]
@@ -147,11 +153,11 @@ object Main extends App {
                                                 type MirroredLabel >: "Pronouns" <: "Pronouns"
                                                 type MirroredElemTypes >: *:[
                                                   They / them,
-                                                  *:[She / her, *:[He / him, EmptyTuple]]
+   *:[She / her, *:[He / him, EmptyTuple]]
                                                 ] <: *:[They / them, *:[She / her, *:[He / him, EmptyTuple]]]
                                                 type MirroredElemLabels >: *:[
                                                   "They/them",
-                                                  *:["She/her", *:["He/him", EmptyTuple]]
+   *:["She/her", *:["He/him", EmptyTuple]]
                                                 ] <: *:["They/them", *:["She/her", *:["He/him", EmptyTuple]]]
                                               } = Pronouns.$asInstanceOf$[
                                                 Sum {
@@ -160,11 +166,11 @@ object Main extends App {
                                                   type MirroredLabel >: "Pronouns" <: "Pronouns"
                                                   type MirroredElemTypes >: *:[
                                                     They / them,
-                                                    *:[She / her, *:[He / him, EmptyTuple]]
+   *:[She / her, *:[He / him, EmptyTuple]]
                                                   ] <: *:[They / them, *:[She / her, *:[He / him, EmptyTuple]]]
                                                   type MirroredElemLabels >: *:[
                                                     "They/them",
-                                                    *:["She/her", *:["He/him", EmptyTuple]]
+   *:["She/her", *:["He/him", EmptyTuple]]
                                                   ] <: *:["They/them", *:["She/her", *:["He/him", EmptyTuple]]]
                                                 }
                                               ]
@@ -174,11 +180,11 @@ object Main extends App {
                                                 type MirroredLabel >: "Pronouns" <: "Pronouns"
                                                 type MirroredElemTypes >: *:[
                                                   They / them,
-                                                  *:[She / her, *:[He / him, EmptyTuple]]
+   *:[She / her, *:[He / him, EmptyTuple]]
                                                 ] <: *:[They / them, *:[She / her, *:[He / him, EmptyTuple]]]
                                                 type MirroredElemLabels >: *:[
                                                   "They/them",
-                                                  *:["She/her", *:["He/him", EmptyTuple]]
+   *:["She/her", *:["He/him", EmptyTuple]]
                                                 ] <: *:["They/them", *:["She/her", *:["He/him", EmptyTuple]]]
                                               } = Pronouns.$asInstanceOf$[
                                                 Sum {
@@ -187,11 +193,11 @@ object Main extends App {
                                                   type MirroredLabel >: "Pronouns" <: "Pronouns"
                                                   type MirroredElemTypes >: *:[
                                                     They / them,
-                                                    *:[She / her, *:[He / him, EmptyTuple]]
+   *:[She / her, *:[He / him, EmptyTuple]]
                                                   ] <: *:[They / them, *:[She / her, *:[He / him, EmptyTuple]]]
                                                   type MirroredElemLabels >: *:[
                                                     "They/them",
-                                                    *:["She/her", *:["He/him", EmptyTuple]]
+   *:["She/her", *:["He/him", EmptyTuple]]
                                                   ] <: *:["They/them", *:["She/her", *:["He/him", EmptyTuple]]]
                                                 }
                                               ]
@@ -230,7 +236,7 @@ object Main extends App {
               type MirroredLabel >: "DateSpan" <: "DateSpan"
               type MirroredElemTypes >: *:[LocalDate, *:[LocalDate, EmptyTuple]] <: *:[
                 LocalDate,
-                *:[LocalDate, EmptyTuple]
+   *:[LocalDate, EmptyTuple]
               ]
               type MirroredElemLabels >: *:["start", *:["end", EmptyTuple]] <: *:["start", *:["end", EmptyTuple]]
             } = DateSpan.$asInstanceOf$[
@@ -240,7 +246,7 @@ object Main extends App {
                 type MirroredLabel >: "DateSpan" <: "DateSpan"
                 type MirroredElemTypes >: *:[LocalDate, *:[LocalDate, EmptyTuple]] <: *:[
                   LocalDate,
-                  *:[LocalDate, EmptyTuple]
+   *:[LocalDate, EmptyTuple]
                 ]
                 type MirroredElemLabels >: *:["start", *:["end", EmptyTuple]] <: *:["start", *:["end", EmptyTuple]]
               }
@@ -257,6 +263,6 @@ object Main extends App {
         }: GetConference)
     ): Transformer[Conference, GetConference])
   }
-  */
+   */
 
 }

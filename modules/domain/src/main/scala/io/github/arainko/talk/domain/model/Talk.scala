@@ -1,9 +1,7 @@
-package io.github.arainko.talk.domain
+package io.github.arainko.talk.domain.model
 
 import java.util.UUID
 import io.github.arainko.newtypes.*
-import io.github.arainko.talk.domain.UnsurprisingString
-import io.github.arainko.talk.domain.Presenter
 
 final case class Talk(id: Talk.Id, name: Talk.Name, elevatorPitch: Talk.ElevatorPitch, presenter: Presenter)
 

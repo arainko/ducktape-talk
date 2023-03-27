@@ -1,3 +1,4 @@
+import dev.guardrail.sbt.CodingConfig
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
 
@@ -10,19 +11,34 @@ lazy val http =
         ScalaServer(
           specPath  = file("api/seriousBusinessApi.yaml"),
           pkg       = "io.github.arainko.talk.generated",
-          framework = "http4s"
+          dto = "API",
+          framework = "http4s",
         )
       )
     )
-    .settings(libraryDependencies += Dependencies.ducktape)
-    .settings(libraryDependencies += Dependencies.refined)
     .settings(libraryDependencies += Dependencies.http4sCore)
     .settings(libraryDependencies += Dependencies.http4sCirce)
     .settings(libraryDependencies += Dependencies.http4sDsl)
     .settings(libraryDependencies += Dependencies.http4sEmberClient)
     .settings(libraryDependencies += Dependencies.http4sEmberServer)
+    .settings(libraryDependencies += Dependencies.log4cats)
     .settings(name := "ducktape-talk")
+    .dependsOn(domain)
+
+lazy val domain =
+  project
+    .in(file("modules/domain"))
+    .settings(Settings.common: _*)
+    .settings(libraryDependencies += Dependencies.catsEffect)
     .dependsOn(newtypes)
+
+lazy val infrastructure =
+  project
+    .in(file("modules/infrastructure"))
+    .settings(Settings.common: _*)
+    .settings(libraryDependencies += Dependencies.monocle)
+    .settings(libraryDependencies += Dependencies.log4cats)
+    .dependsOn(domain)
 
 lazy val newtypes =
   project

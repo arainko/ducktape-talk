@@ -1,12 +1,8 @@
-package io.github.arainko.talk.domain
+package io.github.arainko.talk.domain.model
 
 import java.time.LocalDate
 import java.util.UUID
 import io.github.arainko.newtypes.*
-
-import io.github.arainko.talk.domain.DateSpan
-import io.github.arainko.talk.domain.Talk
-import io.github.arainko.talk.domain.UnsurprisingString
 
 final case class Conference(id: Conference.Id, info: Conference.Info, talks: Vector[Talk])
 

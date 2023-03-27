@@ -1,9 +1,6 @@
-package io.github.arainko.talk.domain
+package io.github.arainko.talk.domain.model
 
 import io.github.arainko.newtypes.*
-
-import io.github.arainko.talk.domain.Pronouns
-import io.github.arainko.talk.domain.UnsurprisingString
 
 final case class Presenter(name: Presenter.Name, bio: Presenter.Bio, pronouns: Option[Pronouns])
 

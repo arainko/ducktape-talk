@@ -1,8 +1,7 @@
 package io.github.arainko.talk.domain.repository
 
-import io.github.arainko.talk.domain.Conference
+import io.github.arainko.talk.domain.model.*
 import cats.effect.IO
-import io.github.arainko.talk.domain.Talk
 
 trait ConferenceRepository {
   def fetchAll: IO[Vector[Conference]]

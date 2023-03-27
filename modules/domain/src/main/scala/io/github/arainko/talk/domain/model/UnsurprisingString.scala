@@ -1,4 +1,4 @@
-package io.github.arainko.talk.domain
+package io.github.arainko.talk.domain.model
 
 import eu.timepit.refined.collection.*
 import eu.timepit.refined.string.Trimmed

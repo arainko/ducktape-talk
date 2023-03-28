@@ -12,4 +12,5 @@ object Dependencies {
   lazy val http4sEmberClient = "org.http4s"        %% "http4s-ember-client" % "0.23.18"
   lazy val http4sEmberServer = "org.http4s"        %% "http4s-ember-server" % "0.23.18"
   lazy val monocle           = "dev.optics"        %% "monocle-core"        % "3.2.0"
+  lazy val logback           = "ch.qos.logback"     % "logback-classic"     % "1.4.6"
 }

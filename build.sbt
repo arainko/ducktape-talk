@@ -22,8 +22,10 @@ lazy val http =
     .settings(libraryDependencies += Dependencies.http4sEmberClient)
     .settings(libraryDependencies += Dependencies.http4sEmberServer)
     .settings(libraryDependencies += Dependencies.log4cats)
+    .settings(libraryDependencies += Dependencies.logback)
+    .settings(run / fork := true)
     .settings(name := "ducktape-talk")
-    .dependsOn(domain)
+    .dependsOn(infrastructure)
 
 lazy val domain =
   project

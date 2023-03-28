@@ -2,6 +2,8 @@ openapi: "3.0.0"
 info:
   version: 0.0.1
   title: Event Management
+servers:
+  - url: http://localhost:9001
 paths:
   /conferences:
     get:

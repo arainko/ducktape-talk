@@ -5,9 +5,12 @@ import cats.syntax.all.*
 import io.github.arainko.ducktape.*
 import io.github.arainko.talk.domain.model.*
 import io.github.arainko.talk.domain.repository.*
-import io.github.arainko.talk.generated.Handler
 import io.github.arainko.talk.generated.Resource.*
 import io.github.arainko.talk.generated.definitions.API
+import io.github.arainko.talk.generated.{ Handler, Resource }
+import org.http4s.HttpRoutes
+import org.http4s.server.middleware.Logger
+import org.typelevel.log4cats.LoggerFactory
 
 import java.util.UUID
 import java.{ util => ju }
@@ -126,5 +129,13 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
 
   private def respondWithValidationErrors[A](wrapper: API.ValidationErrors => A)(errors: ::[String]) =
     wrapper(API.ValidationErrors(errors.toVector))
+
+}
+
+object ConferenceRoutes {
+  def create(repo: ConferenceRepository): HttpRoutes[cats.effect.IO] =
+    Logger.httpRoutes[IO](logHeaders = false, logBody = false) {
+      Resource[IO]().routes(ConferenceRoutes(repo))
+    }
 
 }

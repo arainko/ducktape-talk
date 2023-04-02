@@ -13,14 +13,14 @@ abstract class NewtypeValidated[A, Constraint](using Validate[A, Constraint], Ne
 
   def unsafe(value: A)(using UnsafeTransformations): Type = Refined.unsafeApply[A, Constraint](value)
 
-  def make(value: A): Either[::[String], Type] =
-    refineV[Constraint](value).left.map(err => ::(s"Invalid ${summon[NewtypePath].value} - $err", Nil))
+  def make(value: A): Either[List[String], Type] =
+    refineV[Constraint](value).left.map(err => s"Invalid ${summon[NewtypePath].value} - $err" :: Nil)
 
   extension (self: Type) {
     def value: A = self.asInstanceOf[A]
   }
 
-  given wrappingTransformer: Transformer.Accumulating[Either[::[String], _], A, Type] = make(_)
+  given wrappingTransformer: Transformer.Accumulating[Either[List[String], _], A, Type] = make(_)
 
   given unsafeWrappingTransformer(using UnsafeTransformations): Transformer[A, Type] = unsafe
 

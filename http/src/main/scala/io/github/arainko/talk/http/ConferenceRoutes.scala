@@ -51,7 +51,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(body: API.CreateConference): IO[CreateConferenceResponse] =
     body
       .into[Conference.Info]
-      .accumulating[Either[::[String], _]]
+      .accumulating[Either[List[String], _]]
       .transform(Field.fallibleComputed(_.dateSpan, _.dateSpan.via(DateSpan.create)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .map(info => Conference(Conference.Id(UUID.randomUUID), info, Vector.empty))
@@ -64,7 +64,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, body: API.UpdateConference): IO[UpdateConferenceResponse] =
     body
       .into[Conference.Info]
-      .accumulating[Either[::[String], _]]
+      .accumulating[Either[List[String], _]]
       .transform(Field.fallibleComputed(_.dateSpan, _.dateSpan.via(DateSpan.create)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]
@@ -85,7 +85,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, talkId: ju.UUID, body: API.UpdateTalk): IO[UpdateTalkResponse] =
     body
       .into[Talk]
-      .accumulating[Either[::[String], _]]
+      .accumulating[Either[List[String], _]]
       .transform(Field.const(_.id, Talk.Id(talkId)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]
@@ -114,7 +114,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, body: API.CreateTalk): IO[CreateTalkResponse] =
     body
       .into[Talk]
-      .accumulating[Either[::[String], _]]
+      .accumulating[Either[List[String], _]]
       .transform(Field.const(_.id, Talk.Id(UUID.randomUUID)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]
@@ -127,7 +127,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
       )
       .merge
 
-  private def respondWithValidationErrors[A](wrapper: API.ValidationErrors => A)(errors: ::[String]) =
+  private def respondWithValidationErrors[A](wrapper: API.ValidationErrors => A)(errors: List[String]) =
     wrapper(API.ValidationErrors(errors.toVector))
 
 }

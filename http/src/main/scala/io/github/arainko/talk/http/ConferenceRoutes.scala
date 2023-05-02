@@ -3,6 +3,7 @@ package io.github.arainko.talk.http
 import cats.effect.IO
 import cats.syntax.all.*
 import io.github.arainko.ducktape.*
+import io.github.arainko.ducktape.fallible.Mode.Accumulating
 import io.github.arainko.talk.domain.model.*
 import io.github.arainko.talk.domain.repository.*
 import io.github.arainko.talk.generated.Resource.*
@@ -16,6 +17,9 @@ import java.util.UUID
 import java.{ util => ju }
 
 final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handler[IO] {
+
+  private given Accumulating[[A] =>> Either[List[Predef.String], A]] =
+    Transformer.Mode.Accumulating.either[String, List]
 
   override def deleteTalk(
     respond: DeleteTalkResponse.type
@@ -51,7 +55,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(body: API.CreateConference): IO[CreateConferenceResponse] =
     body
       .into[Conference.Info]
-      .accumulating[Either[List[String], _]]
+      .fallible
       .transform(Field.fallibleComputed(_.dateSpan, _.dateSpan.via(DateSpan.create)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .map(info => Conference(Conference.Id(UUID.randomUUID), info, Vector.empty))
@@ -64,7 +68,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, body: API.UpdateConference): IO[UpdateConferenceResponse] =
     body
       .into[Conference.Info]
-      .accumulating[Either[List[String], _]]
+      .fallible
       .transform(Field.fallibleComputed(_.dateSpan, _.dateSpan.via(DateSpan.create)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]
@@ -85,7 +89,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, talkId: ju.UUID, body: API.UpdateTalk): IO[UpdateTalkResponse] =
     body
       .into[Talk]
-      .accumulating[Either[List[String], _]]
+      .fallible
       .transform(Field.const(_.id, Talk.Id(talkId)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]
@@ -114,7 +118,7 @@ final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handl
   )(conferenceId: ju.UUID, body: API.CreateTalk): IO[CreateTalkResponse] =
     body
       .into[Talk]
-      .accumulating[Either[List[String], _]]
+      .fallible
       .transform(Field.const(_.id, Talk.Id(UUID.randomUUID)))
       .leftMap(respondWithValidationErrors(respond.BadRequest.apply))
       .toEitherT[IO]

@@ -20,7 +20,7 @@ abstract class NewtypeValidated[A, Constraint](using Validate[A, Constraint], Ne
     def value: A = self.asInstanceOf[A]
   }
 
-  given wrappingTransformer: Transformer.Accumulating[Either[List[String], _], A, Type] = make(_)
+  given wrappingTransformer: Transformer.Fallible[Either[List[String], _], A, Type] = make(_)
 
   given unsafeWrappingTransformer(using UnsafeTransformations): Transformer[A, Type] = unsafe
 

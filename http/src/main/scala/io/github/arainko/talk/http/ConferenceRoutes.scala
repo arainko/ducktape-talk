@@ -11,7 +11,6 @@ import io.github.arainko.talk.generated.definitions.API
 import io.github.arainko.talk.generated.{ Handler, Resource }
 import org.http4s.HttpRoutes
 import org.http4s.server.middleware.Logger
-import org.typelevel.log4cats.LoggerFactory
 
 import java.util.UUID
 import java.{ util => ju }

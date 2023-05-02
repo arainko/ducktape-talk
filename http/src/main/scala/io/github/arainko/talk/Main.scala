@@ -7,7 +7,6 @@ import io.github.arainko.talk.http.ConferenceRoutes
 import io.github.arainko.talk.infrastructure.repository.ConferenceRepositoryInMemory
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.middleware.CORS
-import org.typelevel.log4cats.slf4j.{ Slf4jFactory, _ }
 
 object Main extends IOApp.Simple {
 

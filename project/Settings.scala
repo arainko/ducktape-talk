@@ -15,6 +15,6 @@ object Settings {
   val common = List(
     scalaVersion := "3.3.0-RC5",
     tpolecatExcludeOptions += ScalacOptions.privateKindProjector,
-    tpolecatScalacOptions ++= Set(underscoreTypeLambdas, unusedAll)
+    tpolecatScalacOptions ++= Set(underscoreTypeLambdas)
   )
 }

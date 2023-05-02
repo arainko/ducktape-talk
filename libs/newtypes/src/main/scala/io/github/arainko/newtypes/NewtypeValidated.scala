@@ -4,9 +4,6 @@ import io.github.arainko.ducktape.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.*
 import eu.timepit.refined.api.Validate
-import sourcecode.Name
-import sourcecode.Enclosing
-import sourcecode.FullName
 
 abstract class NewtypeValidated[A, Constraint](using Validate[A, Constraint], NewtypePath) {
   opaque type Type = A Refined Constraint

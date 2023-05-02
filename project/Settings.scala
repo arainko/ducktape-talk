@@ -10,6 +10,8 @@ object Settings {
   private val underscoreTypeLambdas = 
     ScalacOptions.privateOption("kind-projector:underscores", _ >= davidgregory084.ScalaVersion.V3_0_0)
 
+  private val unusedAll = ScalacOptions.warnUnusedOption("all")
+
   val common = List(
     scalaVersion := "3.3.0-RC5",
     tpolecatExcludeOptions += ScalacOptions.privateKindProjector,

@@ -3,13 +3,11 @@ package io.github.arainko.talk.infrastructure.repository
 import cats.effect.IO
 import cats.effect.std.AtomicCell
 import cats.syntax.all.*
-import io.github.arainko.ducktape.*
 import io.github.arainko.newtypes.UnsafeTransformations
 import io.github.arainko.talk.domain.model.*
 import io.github.arainko.talk.domain.repository.*
 import io.github.arainko.talk.infrastructure.model as storageModel
 import monocle.*
-import monocle.syntax.all.*
 
 import java.util.UUID
 import monocle.function.At

@@ -1,6 +1,5 @@
 package io.github.arainko.talk.domain.model
 
-import java.time.LocalDate
 import java.util.UUID
 import io.github.arainko.newtypes.*
 

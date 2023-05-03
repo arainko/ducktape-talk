@@ -12,7 +12,7 @@ object Settings {
 
   private val unusedAll = ScalacOptions.warnUnusedOption("all")
 
-  val common = List(
+  val common = Def.settings(
     scalaVersion := "3.3.0-RC5",
     tpolecatExcludeOptions += ScalacOptions.privateKindProjector,
     tpolecatScalacOptions ++= Set(underscoreTypeLambdas, unusedAll)

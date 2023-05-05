@@ -8,7 +8,7 @@ paths:
   /conferences:
     get:
       summary: Fetch all conferences
-      operationId: fetch-conferences-op
+      operationId: fetch-conferences
       responses:
         200:
           description: "All conferences"
@@ -20,7 +20,7 @@ paths:
                   $ref: "#/components/schemas/GetConference"
     post:
       summary: Create a new conference
-      operationId: create-conference-op
+      operationId: create-conference
       requestBody:
         required: true
         content:
@@ -44,7 +44,7 @@ paths:
   /conferences/{conferenceId}:
     put:
       summary: Update conference information
-      operationId: update-conference-op
+      operationId: update-conference
       parameters:
         - in: path
           name: conferenceId
@@ -76,7 +76,7 @@ paths:
 
     delete:
       summary: "Delete a conference"
-      operationId: delete-conference-op
+      operationId: delete-conference
       parameters:
         - in: path
           name: conferenceId
@@ -97,7 +97,7 @@ paths:
   /conferences/{conferenceId}/talks:
     post:
       summary: Creates a talk in a given conference
-      operationId: create-talk-op
+      operationId: create-talk
       parameters:
         - in: path
           name: conferenceId
@@ -134,7 +134,7 @@ paths:
   /conferences/{conferenceId}/talks/{talkId}:
     put:
       summary: Update a given talk in a given conference
-      operationId: update-talk-op
+      operationId: update-talk
       parameters:
         - in: path
           name: conferenceId
@@ -175,7 +175,7 @@ paths:
                 $ref: "#/components/schemas/ValidationErrors"
     delete:
       summary: Delete a given talk in a given conference
-      operationId: delete-talk-op
+      operationId: delete-talk
       parameters:
         - in: path
           name: conferenceId

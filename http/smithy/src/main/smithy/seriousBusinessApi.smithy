@@ -1,20 +1,21 @@
 $version: "2.0"
 
-namespace seriousBusinessApi
+namespace io.github.arainko.talk
 
+use alloy#simpleRestJson
 use alloy#dateFormat
 use alloy#UUID
-use smithytranslate#contentType
 
+@simpleRestJson
 service SeriousBusinessApiService {
     operations: [
-        CreateConferenceOp
-        CreateTalkOp
-        DeleteConferenceOp
-        DeleteTalkOp
-        FetchConferencesOp
-        UpdateConferenceOp
-        UpdateTalkOp
+        CreateConference
+        CreateTalk
+        DeleteConference
+        DeleteTalk
+        FetchConferences
+        UpdateConference
+        UpdateTalk
     ]
 }
 
@@ -23,11 +24,11 @@ service SeriousBusinessApiService {
     uri: "/conferences"
     code: 201
 )
-operation CreateConferenceOp {
-    input: CreateConferenceOpInput
-    output: CreateConferenceOp201
+operation CreateConference {
+    input: CreateConferenceInput
+    output: CreateConferenceOutput
     errors: [
-        CreateConferenceOp400
+        ValidationErrors
     ]
 }
 
@@ -36,12 +37,12 @@ operation CreateConferenceOp {
     uri: "/conferences/{conferenceId}/talks"
     code: 201
 )
-operation CreateTalkOp {
-    input: CreateTalkOpInput
-    output: CreateTalkOp201
+operation CreateTalk {
+    input: CreateTalkInput
+    output: CreateTalkOutput
     errors: [
-        CreateTalkOp400
-        CreateTalkOp404
+        ValidationErrors
+        ConferenceNotFound
     ]
 }
 
@@ -50,11 +51,11 @@ operation CreateTalkOp {
     uri: "/conferences/{conferenceId}"
     code: 200
 )
-operation DeleteConferenceOp {
-    input: DeleteConferenceOpInput
+operation DeleteConference {
+    input: DeleteConferenceInput
     output: Unit
     errors: [
-        DeleteConferenceOp404
+        ConferenceNotFound
     ]
 }
 
@@ -63,11 +64,11 @@ operation DeleteConferenceOp {
     uri: "/conferences/{conferenceId}/talks/{talkId}"
     code: 200
 )
-operation DeleteTalkOp {
-    input: DeleteTalkOpInput
+operation DeleteTalk {
+    input: DeleteTalkInput
     output: Unit
     errors: [
-        DeleteTalkOp404
+        ConferenceNotFound //TODO: Conf or Talk not found
     ]
 }
 
@@ -76,9 +77,9 @@ operation DeleteTalkOp {
     uri: "/conferences"
     code: 200
 )
-operation FetchConferencesOp {
+operation FetchConferences {
     input: Unit
-    output: FetchConferencesOp200
+    output: FetchConferencesOutput
 }
 
 @http(
@@ -86,12 +87,12 @@ operation FetchConferencesOp {
     uri: "/conferences/{conferenceId}"
     code: 200
 )
-operation UpdateConferenceOp {
-    input: UpdateConferenceOpInput
+operation UpdateConference {
+    input: UpdateConferenceInput
     output: Unit
     errors: [
-        UpdateConferenceOp400
-        UpdateConferenceOp404
+        ValidationErrors
+        ConferenceNotFound
     ]
 }
 
@@ -100,45 +101,24 @@ operation UpdateConferenceOp {
     uri: "/conferences/{conferenceId}/talks/{talkId}"
     code: 201
 )
-operation UpdateTalkOp {
-    input: UpdateTalkOpInput
-    output: UpdateTalkOp201
+operation UpdateTalk {
+    input: UpdateTalkInput
+    output: UpdateTalkOutput
     errors: [
-        UpdateTalkOp400
-        UpdateTalkOp404
+        ValidationErrors
+        ConferenceNotFound //TODO: Conf or Talk not found
     ]
 }
 
-structure CreateConference {
-    @required
-    name: String
-    @required
-    dateSpan: DateSpan
-    @required
-    city: String
-}
-
-structure CreateConferenceOp201 {
+structure CreateConferenceOutput {
     @httpPayload
     @required
-    @contentType("application/json")
     body: CreatedId
 }
 
-@error("client")
-@httpError(400)
-structure CreateConferenceOp400 {
-    @httpPayload
+structure CreateConferenceInput {
     @required
-    @contentType("application/json")
-    body: ValidationErrors
-}
-
-structure CreateConferenceOpInput {
-    @httpPayload
-    @required
-    @contentType("application/json")
-    body: CreateConference
+    body: CreateConferenceBody
 }
 
 structure CreatedId {
@@ -146,7 +126,7 @@ structure CreatedId {
     createdId: UUID
 }
 
-structure CreateTalk {
+structure CreateTalkBody {
     @required
     name: String
     @required
@@ -155,39 +135,28 @@ structure CreateTalk {
     presenter: Presenter
 }
 
-structure CreateTalkOp201 {
+structure CreateTalkOutput {
     @httpPayload
     @required
-    @contentType("application/json")
     body: CreatedId
 }
 
-@error("client")
-@httpError(400)
-structure CreateTalkOp400 {
-    @httpPayload
-    @required
-    @contentType("application/json")
-    body: ValidationErrors
-}
 
 @error("client")
 @httpError(404)
-structure CreateTalkOp404 {
+structure ConferenceNotFound {
     @httpPayload
     @required
-    @contentType("application/json")
     body: ErrorMessage
 }
 
-structure CreateTalkOpInput {
+structure CreateTalkInput {
     @httpLabel
     @required
     conferenceId: UUID
     @httpPayload
     @required
-    @contentType("application/json")
-    body: CreateTalk
+    body: CreateTalkBody
 }
 
 structure DateSpan {
@@ -204,11 +173,10 @@ structure DateSpan {
 structure DeleteConferenceOp404 {
     @httpPayload
     @required
-    @contentType("application/json")
     body: ErrorMessage
 }
 
-structure DeleteConferenceOpInput {
+structure DeleteConferenceInput {
     @httpLabel
     @required
     conferenceId: UUID
@@ -219,11 +187,10 @@ structure DeleteConferenceOpInput {
 structure DeleteTalkOp404 {
     @httpPayload
     @required
-    @contentType("application/json")
     body: ErrorMessage
 }
 
-structure DeleteTalkOpInput {
+structure DeleteTalkInput {
     @httpLabel
     @required
     conferenceId: UUID
@@ -237,12 +204,14 @@ structure ErrorMessage {
     errorMessage: String
 }
 
-structure FetchConferencesOp200 {
+structure FetchConferencesOutput {
     @httpPayload
     @required
-    @contentType("application/json")
-    body: Body
+    body: Conferences
 }
+
+// TOOD
+structure CreateConferenceBody {}
 
 structure GetConference {
     @required
@@ -276,7 +245,7 @@ structure Presenter {
     pronouns: Pronouns
 }
 
-structure UpdateConference {
+structure UpdateConferenceBody {
     @required
     name: String
     @required
@@ -286,34 +255,23 @@ structure UpdateConference {
 }
 
 @error("client")
-@httpError(400)
-structure UpdateConferenceOp400 {
-    @httpPayload
-    @required
-    @contentType("application/json")
-    body: ValidationErrors
-}
-
-@error("client")
 @httpError(404)
 structure UpdateConferenceOp404 {
     @httpPayload
     @required
-    @contentType("application/json")
     body: ErrorMessage
 }
 
-structure UpdateConferenceOpInput {
+structure UpdateConferenceInput {
     @httpLabel
     @required
     conferenceId: UUID
     @httpPayload
     @required
-    @contentType("application/json")
-    body: UpdateConference
+    body: UpdateConferenceBody
 }
 
-structure UpdateTalk {
+structure UpdateTalkBody {
     @required
     name: String
     @required
@@ -322,32 +280,13 @@ structure UpdateTalk {
     presenter: Presenter
 }
 
-structure UpdateTalkOp201 {
+structure UpdateTalkOutput {
     @httpPayload
     @required
-    @contentType("application/json")
     body: CreatedId
 }
 
-@error("client")
-@httpError(400)
-structure UpdateTalkOp400 {
-    @httpPayload
-    @required
-    @contentType("application/json")
-    body: ValidationErrors
-}
-
-@error("client")
-@httpError(404)
-structure UpdateTalkOp404 {
-    @httpPayload
-    @required
-    @contentType("application/json")
-    body: ErrorMessage
-}
-
-structure UpdateTalkOpInput {
+structure UpdateTalkInput {
     @httpLabel
     @required
     conferenceId: UUID
@@ -356,16 +295,17 @@ structure UpdateTalkOpInput {
     talkId: UUID
     @httpPayload
     @required
-    @contentType("application/json")
-    body: UpdateTalk
+    body: UpdateTalkBody
 }
 
+@error("client")
+@httpError(404)
 structure ValidationErrors {
     @required
     errors: Errors
 }
 
-list Body {
+list Conferences {
     member: GetConference
 }
 

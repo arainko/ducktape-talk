@@ -39,6 +39,7 @@ lazy val httpSmithy =
         "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger" % smithy4sVersion.value,
       )
     )
+    .dependsOn(domain, infrastructure)
 
 lazy val domain =
   project
@@ -66,4 +67,4 @@ lazy val newtypes =
 lazy val root =
   project
     .in(file("."))
-    .aggregate(httpGuardrail, httpGuardrail)
+    .aggregate(httpGuardrail, httpSmithy)

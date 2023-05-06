@@ -1,10 +1,16 @@
 $version: "2.0"
 
-namespace io.github.arainko.talk
+namespace io.github.arainko.talk.API
 
 use alloy#simpleRestJson
 use alloy#dateFormat
 use alloy#UUID
+use smithy4s.meta#refinement
+
+apply dateFormat @refinement(
+    targetType: "java.time.LocalDate",
+    providerImport: "io.github.arainko.talk.given"
+)
 
 @simpleRestJson
 service SeriousBusinessApiService {
@@ -68,7 +74,7 @@ operation DeleteTalk {
     input: DeleteTalkInput
     output: Unit
     errors: [
-        ConferenceNotFound //TODO: Conf or Talk not found
+        ConferenceOrTalkNotFound
     ]
 }
 
@@ -106,7 +112,7 @@ operation UpdateTalk {
     output: UpdateTalkOutput
     errors: [
         ValidationErrors
-        ConferenceNotFound //TODO: Conf or Talk not found
+        ConferenceOrTalkNotFound
     ]
 }
 
@@ -147,7 +153,15 @@ structure CreateTalkOutput {
 structure ConferenceNotFound {
     @httpPayload
     @required
-    body: ErrorMessage
+    body: String
+}
+
+@error("client")
+@httpError(404)
+structure ConferenceOrTalkNotFound {
+    @httpPayload
+    @required
+    body: String
 }
 
 structure CreateTalkInput {
@@ -168,26 +182,10 @@ structure DateSpan {
     end: String
 }
 
-@error("client")
-@httpError(404)
-structure DeleteConferenceOp404 {
-    @httpPayload
-    @required
-    body: ErrorMessage
-}
-
 structure DeleteConferenceInput {
     @httpLabel
     @required
     conferenceId: UUID
-}
-
-@error("client")
-@httpError(404)
-structure DeleteTalkOp404 {
-    @httpPayload
-    @required
-    body: ErrorMessage
 }
 
 structure DeleteTalkInput {
@@ -254,14 +252,6 @@ structure UpdateConferenceBody {
     city: String
 }
 
-@error("client")
-@httpError(404)
-structure UpdateConferenceOp404 {
-    @httpPayload
-    @required
-    body: ErrorMessage
-}
-
 structure UpdateConferenceInput {
     @httpLabel
     @required
@@ -299,7 +289,7 @@ structure UpdateTalkInput {
 }
 
 @error("client")
-@httpError(404)
+@httpError(400)
 structure ValidationErrors {
     @required
     errors: Errors

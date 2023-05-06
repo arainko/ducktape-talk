@@ -3,8 +3,6 @@ package io.github.arainko.talk
 import alloy.SimpleRestJson
 import cats.data.EitherT
 import cats.effect.{ IO, IOApp }
-import io.github.arainko.talk.SeriousBusinessApiService
-import io.github.arainko.talk.SeriousBusinessApiServiceOperation._
 import smithy4s.http4s.SimpleRestJsonBuilder
 import smithy4s.kinds.Kind2
 
@@ -15,6 +13,19 @@ import java.{ util => ju }
 
 
 object Main extends IOApp.Simple {
+  import cats.syntax.all.*
+
+  val errStr: EitherT[IO, String, Unit] = ???
+
+  val intErr: EitherT[IO, Int, Unit] = ???
+
+  val union: EitherT[IO, String | Int, Unit] = errStr.flatMap(_ => intErr.leftWiden)
+    // for {
+    //   _ <- errStr
+    //   _ <- intErr.leftWiden
+    //   // _ <- errStr.leftWiden
+    // } yield ()
+
   // SimpleRestJsonBuilder.routes()
   def run = ???
 }

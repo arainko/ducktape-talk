@@ -1,9 +1,11 @@
 package io.github.arainko.talk
 
 import alloy.SimpleRestJson
-import cats.data.EitherT
+import cats.data.{ EitherT, Kleisli }
+import cats.effect.kernel.Resource
 import cats.effect.{ IO, IOApp }
-import cats.syntax.all.*
+import cats.syntax.either.*
+import cats.syntax.functor.*
 import io.github.arainko.ducktape.fallible.Mode.Accumulating
 import io.github.arainko.ducktape.{ Transformer, _ }
 import io.github.arainko.talk.API
@@ -11,6 +13,8 @@ import io.github.arainko.talk.API.SeriousBusinessApiServiceOperation.*
 import io.github.arainko.talk.API.ValidationErrors
 import io.github.arainko.talk.domain.model.*
 import io.github.arainko.talk.domain.repository.{ ConferenceNotFound, ConferenceRepository, TalkNotFound }
+import org.http4s.{ HttpRoutes, Request, Response }
+import smithy4s.Transformation
 import smithy4s.http4s.SimpleRestJsonBuilder
 import smithy4s.kinds.Kind2
 
@@ -60,7 +64,15 @@ class ConferenceRoutes(conferenceRepo: ConferenceRepository)
 
   override def createConference(
     body: API.CreateConferenceBody
-  ): EitherT[IO, CreateConferenceError, API.CreateConferenceOutput] = ???
+  ): EitherT[IO, CreateConferenceError, API.CreateConferenceOutput] =
+    body
+      .into[Conference.Info]
+      .fallible
+      .transform(Field.fallibleComputed(_.dateSpan, _.dateSpan.via(DateSpan.create)))
+      .leftMap(ValidationErrors.apply)
+      .map(info => Conference(Conference.Id(UUID.randomUUID), info, Vector.empty))
+      .toEitherT[IO]
+      .semiflatMap(conf => conferenceRepo.create(conf).as(API.CreateConferenceOutput(API.CreatedId(conf.id.value))))
 
   override def deleteTalk(conferenceId: ju.UUID, talkId: ju.UUID): EitherT[IO, DeleteTalkError, Unit] =
     EitherT(conferenceRepo.deleteTalk(Conference.Id(conferenceId), Talk.Id(talkId))).leftMap {
@@ -107,4 +119,16 @@ class ConferenceRoutes(conferenceRepo: ConferenceRepository)
   override def deleteConference(conferenceId: ju.UUID): EitherT[IO, DeleteConferenceError, Unit] =
     EitherT(conferenceRepo.delete(Conference.Id(conferenceId)))
       .leftMap(confNotFound => API.ConferenceNotFound(confNotFound.message))
+}
+
+object ConferenceRoutes {
+  def create(repo: ConferenceRepository): Resource[IO, HttpRoutes[IO]] =
+    SimpleRestJsonBuilder
+      .routes(ConferenceRoutes(repo).transform(absorbErrors))
+      .resource
+
+  private val absorbErrors = new Transformation.AbsorbError[EitherT[IO, _, _], IO] {
+    override def apply[E, A](fa: EitherT[IO, E, A], injectError: E => Throwable): IO[A] =
+      fa.leftMap(injectError).rethrowT
+  }
 }

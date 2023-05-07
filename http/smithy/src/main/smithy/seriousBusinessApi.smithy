@@ -1,18 +1,14 @@
 $version: "2.0"
 
 metadata smithy4sErrorsAsScala3Unions = true
-
 namespace io.github.arainko.talk.API
 
-use alloy#simpleRestJson
-use alloy#dateFormat
 use alloy#UUID
+use alloy#dateFormat
+use alloy#simpleRestJson
 use smithy4s.meta#refinement
 
-apply dateFormat @refinement(
-    targetType: "java.time.LocalDate",
-    providerImport: "io.github.arainko.talk.given"
-)
+apply dateFormat @refinement(targetType: "java.time.LocalDate", providerImport: "io.github.arainko.talk.given")
 
 @simpleRestJson
 service SeriousBusinessApiService {
@@ -27,95 +23,52 @@ service SeriousBusinessApiService {
     ]
 }
 
-@http(
-    method: "POST"
-    uri: "/conferences"
-    code: 201
-)
+@http(method: "POST", uri: "/conferences", code: 201)
 operation CreateConference {
     input: CreateConferenceInput
     output: CreateConferenceOutput
-    errors: [
-        ValidationErrors
-    ]
+    errors: [ValidationErrors]
 }
 
-@http(
-    method: "POST"
-    uri: "/conferences/{conferenceId}/talks"
-    code: 201
-)
+@http(method: "POST", uri: "/conferences/{conferenceId}/talks", code: 201)
 operation CreateTalk {
     input: CreateTalkInput
     output: CreateTalkOutput
-    errors: [
-        ValidationErrors
-        ConferenceNotFound
-    ]
+    errors: [ValidationErrors, ConferenceNotFound]
 }
 
-@http(
-    method: "DELETE"
-    uri: "/conferences/{conferenceId}"
-    code: 200
-)
+@http(method: "DELETE", uri: "/conferences/{conferenceId}", code: 200)
 operation DeleteConference {
     input: DeleteConferenceInput
     output: Unit
-    errors: [
-        ConferenceNotFound
-    ]
+    errors: [ConferenceNotFound]
 }
 
-@http(
-    method: "DELETE"
-    uri: "/conferences/{conferenceId}/talks/{talkId}"
-    code: 200
-)
+@http(method: "DELETE", uri: "/conferences/{conferenceId}/talks/{talkId}", code: 200)
 operation DeleteTalk {
     input: DeleteTalkInput
     output: Unit
-    errors: [
-        ConferenceOrTalkNotFound
-    ]
+    errors: [ConferenceOrTalkNotFound]
 }
 
-@http(
-    method: "GET"
-    uri: "/conferences"
-    code: 200
-)
+@http(method: "GET", uri: "/conferences", code: 200)
 operation FetchConferences {
     input: Unit
     output: FetchConferencesOutput
 }
 
-@http(
-    method: "PUT"
-    uri: "/conferences/{conferenceId}"
-    code: 200
-)
+@http(method: "PUT", uri: "/conferences/{conferenceId}", code: 200)
 operation UpdateConference {
     input: UpdateConferenceInput
     output: Unit
-    errors: [
-        ValidationErrors
-        ConferenceNotFound
-    ]
+    errors: [ValidationErrors, ConferenceNotFound]
 }
 
-@http(
-    method: "PUT"
-    uri: "/conferences/{conferenceId}/talks/{talkId}"
-    code: 201
-)
+@http(method: "PUT", uri: "/conferences/{conferenceId}/talks/{talkId}", code: 201)
 operation UpdateTalk {
     input: UpdateTalkInput
     output: UpdateTalkOutput
-    errors: [
-        ValidationErrors
-        ConferenceOrTalkNotFound
-    ]
+    errors: [ValidationErrors, ConferenceOrTalkNotFound]
 }
 
 structure CreateConferenceOutput {
@@ -148,7 +101,6 @@ structure CreateTalkOutput {
     @required
     body: CreatedId
 }
-
 
 @error("client")
 @httpError(404)
@@ -210,8 +162,14 @@ structure FetchConferencesOutput {
     body: Conferences
 }
 
-// TOOD
-structure CreateConferenceBody {}
+structure CreateConferenceBody {
+    @required
+    name: String
+    @required
+    dateSpan: DateSpan
+    @required
+    city: String
+}
 
 structure GetConference {
     @required

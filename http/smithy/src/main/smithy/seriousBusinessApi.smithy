@@ -1,5 +1,7 @@
 $version: "2.0"
 
+metadata smithy4sErrorsAsScala3Unions = true
+
 namespace io.github.arainko.talk.API
 
 use alloy#simpleRestJson

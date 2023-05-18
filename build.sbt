@@ -2,17 +2,17 @@ import dev.guardrail.sbt.CodingConfig
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
 
-lazy val http =
+lazy val httpGuardrail =
   project
-    .in(file("http"))
-    .settings(Settings.common: _*)
+    .in(file("http/guardrail"))
+    .settings(Settings.common)
     .settings(
       Compile / guardrailTasks := List(
         ScalaServer(
           specPath  = file("api/seriousBusinessApi.yaml"),
           pkg       = "io.github.arainko.talk.generated",
-          dto = "API",
-          framework = "http4s",
+          dto       = "API",
+          framework = "http4s"
         )
       )
     )
@@ -24,20 +24,34 @@ lazy val http =
     .settings(libraryDependencies += Dependencies.log4cats)
     .settings(libraryDependencies += Dependencies.logback)
     .settings(run / fork := true)
-    .settings(name := "ducktape-talk")
+    .settings(name := "ducktape-talk-guardrail")
     .dependsOn(infrastructure)
+
+lazy val httpSmithy =
+  project
+    .in(file("http/smithy"))
+    .settings(Settings.common)
+    .enablePlugins(Smithy4sCodegenPlugin)
+    .settings(
+      libraryDependencies ++= Seq(
+        Dependencies.http4sEmberServer,
+        "com.disneystreaming.smithy4s" %% "smithy4s-http4s"         % smithy4sVersion.value,
+        "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger" % smithy4sVersion.value,
+      )
+    )
+    .dependsOn(domain, infrastructure)
 
 lazy val domain =
   project
     .in(file("modules/domain"))
-    .settings(Settings.common: _*)
+    .settings(Settings.common)
     .settings(libraryDependencies += Dependencies.catsEffect)
     .dependsOn(newtypes)
 
 lazy val infrastructure =
   project
     .in(file("modules/infrastructure"))
-    .settings(Settings.common: _*)
+    .settings(Settings.common)
     .settings(libraryDependencies += Dependencies.monocle)
     .settings(libraryDependencies += Dependencies.log4cats)
     .dependsOn(domain)
@@ -45,7 +59,7 @@ lazy val infrastructure =
 lazy val newtypes =
   project
     .in(file("libs/newtypes"))
-    .settings(Settings.common: _*)
+    .settings(Settings.common)
     .settings(libraryDependencies += Dependencies.ducktape)
     .settings(libraryDependencies += Dependencies.refined)
     .settings(libraryDependencies += Dependencies.sourcecode)
@@ -53,4 +67,4 @@ lazy val newtypes =
 lazy val root =
   project
     .in(file("."))
-    .aggregate(http)
+    .aggregate(httpGuardrail, httpSmithy)

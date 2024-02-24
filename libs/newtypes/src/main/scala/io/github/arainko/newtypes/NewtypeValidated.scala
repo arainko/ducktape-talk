@@ -19,7 +19,7 @@ abstract class NewtypeValidated[A, Constraint](using Validate[A, Constraint], Ne
 
   given wrappingTransformer: Transformer.Fallible[Either[List[String], _], A, Type] = make(_)
 
-  given unsafeWrappingTransformer(using UnsafeTransformations): Transformer[A, Type] = unsafe
+  given unsafeWrappingTransformer(using UnsafeTransformations): Transformer[A, Type] = unsafe(_)
 
   given unwrappingTransformer: Transformer[Type, A] = _.value
 

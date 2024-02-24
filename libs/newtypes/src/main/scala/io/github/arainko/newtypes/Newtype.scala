@@ -15,7 +15,11 @@ trait Newtype[A] {
     def value: A = self
   }
 
-  given wrappingTransformer: Transformer[A, Type] = apply
+  given wrappingTransformer: Transformer[A, Type] = new {
+    def transform(value: A): Type = apply(value)
+  }
 
-  given uwnrappingTransformer: Transformer[Type, A] = _.value
+  given uwnrappingTransformer: Transformer[Type, A] = new {
+    def transform(value: Type): A = value.value
+  }
 }

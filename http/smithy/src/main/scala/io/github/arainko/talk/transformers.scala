@@ -9,14 +9,14 @@ import io.github.arainko.talk.API.Pronouns.sheher
 import io.github.arainko.talk.API.Pronouns.theythem
 import io.github.arainko.talk.API.Pronouns.hehim
 
-given bijectTo[A, B](using bijection: Bijection[A, B]): Transformer[A, B] = bijection.to
+given bijectTo[A, B](using bijection: Bijection[A, B]): Transformer[A, B] = bijection.to(_)
 
-given bijectFrom[A, B](using bijection: Bijection[A, B]): Transformer[B, A] = bijection.from
+given bijectFrom[A, B](using bijection: Bijection[A, B]): Transformer[B, A] = bijection.from(_)
 
 given surjectTo[A, B](using surjection: Surjection[A, B]): Transformer.Fallible[Either[List[String], _], A, B] =
   surjection.to(_).left.map(_ :: Nil)
 
-given surjectFrom[A, B](using surjection: Surjection[A, B]): Transformer[B, A] = surjection.from
+given surjectFrom[A, B](using surjection: Surjection[A, B]): Transformer[B, A] = surjection.from(_)
 
 given toApiPronouns: Transformer[Pronouns, API.Pronouns] = {
   case Pronouns.`They/them` => API.Pronouns.theythem
@@ -29,4 +29,3 @@ given fromApiPronouns: Transformer[API.Pronouns, Pronouns] = {
   case API.Pronouns.theythem => Pronouns.`They/them`
   case API.Pronouns.hehim => Pronouns.`He/him`
 }
-

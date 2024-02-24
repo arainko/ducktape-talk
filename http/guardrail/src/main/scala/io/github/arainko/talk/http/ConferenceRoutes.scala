@@ -3,7 +3,6 @@ package io.github.arainko.talk.http
 import cats.effect.IO
 import cats.syntax.all.*
 import io.github.arainko.ducktape.*
-import io.github.arainko.ducktape.fallible.Mode.Accumulating
 import io.github.arainko.talk.domain.model.*
 import io.github.arainko.talk.domain.repository.*
 import io.github.arainko.talk.generated.Resource.*
@@ -17,8 +16,8 @@ import java.{ util => ju }
 
 final class ConferenceRoutes(conferenceRepo: ConferenceRepository) extends Handler[IO] {
 
-  private given Accumulating[[A] =>> Either[List[Predef.String], A]] =
-    Transformer.Mode.Accumulating.either[String, List]
+  private given Mode.Accumulating[[A] =>> Either[List[Predef.String], A]] =
+    Mode.Accumulating.either[String, List]
 
   override def deleteTalk(
     respond: DeleteTalkResponse.type

@@ -6,8 +6,7 @@ import cats.effect.kernel.Resource
 import cats.effect.{ IO, IOApp }
 import cats.syntax.either.*
 import cats.syntax.functor.*
-import io.github.arainko.ducktape.fallible.Mode.Accumulating
-import io.github.arainko.ducktape.{ Transformer, _ }
+import io.github.arainko.ducktape.*
 import io.github.arainko.talk.API
 import io.github.arainko.talk.API.SeriousBusinessApiServiceOperation.*
 import io.github.arainko.talk.API.ValidationErrors
@@ -24,8 +23,8 @@ import java.{ util => ju }
 class ConferenceRoutes(conferenceRepo: ConferenceRepository)
     extends API.SeriousBusinessApiService.ErrorAware[[e, a] =>> EitherT[IO, e, a]] {
 
-  private given Accumulating[[A] =>> Either[List[Predef.String], A]] =
-    Transformer.Mode.Accumulating.either[String, List]
+  private given Mode.Accumulating[[A] =>> Either[List[Predef.String], A]] =
+    Mode.Accumulating.either[String, List]
 
   override def fetchConferences(): EitherT[IO, Nothing, API.FetchConferencesOutput] =
     EitherT.liftF {

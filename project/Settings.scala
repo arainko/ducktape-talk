@@ -13,7 +13,7 @@ object Settings {
   private val unusedAll = ScalacOptions.warnUnusedOption("all")
 
   val common = Def.settings(
-    scalaVersion := "3.3.1",
+    scalaVersion := "3.3.3",
     resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
     tpolecatExcludeOptions ++= Set(ScalacOptions.privateKindProjector),
     tpolecatScalacOptions ++= Set(underscoreTypeLambdas)

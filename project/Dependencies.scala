@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  lazy val ducktape          = "io.github.arainko" %% "ducktape"            % "0.2.0-M4"
+  lazy val ducktape          = "io.github.arainko" %% "ducktape"            % "0.2-1e0df24-SNAPSHOT"
   lazy val refined           = "eu.timepit"        %% "refined"             % "0.10.2"
   lazy val sourcecode        = "com.lihaoyi"       %% "sourcecode"          % "0.3.0"
   lazy val catsEffect        = "org.typelevel"     %% "cats-effect"         % "3.4.8"

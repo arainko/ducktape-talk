@@ -46,6 +46,14 @@ class ConferenceRoutes(conferenceRepo: ConferenceRepository)
       )
     }
 
+  private def domainConfToApiConf(conf: Conference): API.GetConference = 
+    conf.into[API.GetConference].transform(
+      Field.computed(_.city, _.info.city.value),
+      Field.computed(_.name, _.info.name.value),
+      Field.computed(_.dateSpan, _.info.dateSpan.via(API.DateSpan.apply))
+    )
+    
+
   override def updateConference(
     conferenceId: ju.UUID,
     body: API.UpdateConferenceBody

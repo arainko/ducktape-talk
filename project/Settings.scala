@@ -2,7 +2,6 @@ import io.github.davidgregory084._
 import io.github.davidgregory084.TpolecatPlugin.autoImport._
 import sbt._
 import sbt.Keys._
-import dev.guardrail
 import _root_.io.github.davidgregory084
 import scala.Ordering.Implicits.*
 
@@ -13,7 +12,7 @@ object Settings {
   private val unusedAll = ScalacOptions.warnUnusedOption("all")
 
   val common = Def.settings(
-    scalaVersion := "3.3.0-RC5",
+    scalaVersion := "3.3.3",
     tpolecatExcludeOptions += ScalacOptions.privateKindProjector,
     tpolecatScalacOptions ++= Set(underscoreTypeLambdas)
   )

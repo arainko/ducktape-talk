@@ -1,13 +1,11 @@
 package io.github.arainko.talk
 
 import io.github.arainko.ducktape.Transformer
+import io.github.arainko.talk.API.Pronouns.{ hehim, sheher, theythem }
 import io.github.arainko.talk.domain.model.Pronouns
 import smithy4s.{ Bijection, Surjection }
 
 import java.time.LocalDate
-import io.github.arainko.talk.API.Pronouns.sheher
-import io.github.arainko.talk.API.Pronouns.theythem
-import io.github.arainko.talk.API.Pronouns.hehim
 
 given bijectTo[A, B](using bijection: Bijection[A, B]): Transformer[A, B] = bijection.to
 
@@ -25,8 +23,7 @@ given toApiPronouns: Transformer[Pronouns, API.Pronouns] = {
 }
 
 given fromApiPronouns: Transformer[API.Pronouns, Pronouns] = {
-  case API.Pronouns.sheher => Pronouns.`She/her`
+  case API.Pronouns.sheher   => Pronouns.`She/her`
   case API.Pronouns.theythem => Pronouns.`They/them`
-  case API.Pronouns.hehim => Pronouns.`He/him`
+  case API.Pronouns.hehim    => Pronouns.`He/him`
 }
-

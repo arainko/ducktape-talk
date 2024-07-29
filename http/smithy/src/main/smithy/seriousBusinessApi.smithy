@@ -23,6 +23,11 @@ service SeriousBusinessApiService {
     ]
 }
 
+@trait(
+    selector: "operation -[input]-> structure :test(> member)"
+)
+structure paginated3 {}
+
 @http(method: "POST", uri: "/conferences", code: 201)
 operation CreateConference {
     input: CreateConferenceInput
